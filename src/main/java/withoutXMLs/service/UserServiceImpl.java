@@ -13,10 +13,40 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserDAO userDAO;
 
-    public void save(User user){
+    @Autowired
+    public UserServiceImpl(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
+    @Override
+    public void save(User user) {
+        userDAO.save(user);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userDAO.getUsers();
+    }
+
+    @Override
+    public void FirstSave() {
+        userDAO.FirstSave();
+    }
+
+    @Override
+    public User getFromId(Long id) {
+        return userDAO.getFromId(id);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+    userDAO.deleteUser(id);
+    }
+
+    @Override
+    public void updateUser(Long id, User user) {
+    userDAO.updateUser(id,user);
     }
 }

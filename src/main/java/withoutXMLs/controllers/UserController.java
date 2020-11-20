@@ -15,22 +15,22 @@ import java.util.List;
 @Controller
 public class UserController {
 
-    private UserDAO userDAO;
+    private UserService userService;
 
     @Autowired
-    public UserController(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     //Добавление первой записи в БД
     @Autowired
     public void FirstUserInTable(){
-        userDAO.FirstSave();
+        userService.FirstSave();
     }
 
     @GetMapping("/")
     public String ViewUserListPage(Model model){
-        model.addAttribute("user",userDAO.getUsers());
+        model.addAttribute("user",userService.getUsers());
         return "page";
     }
 
@@ -41,28 +41,32 @@ public class UserController {
     }
     @PostMapping
     public String create(User user){
-        userDAO.save(user);
+        userService.save(user);
         return "redirect:/";
     }
 
     //Показать юзера с id
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id, Model model){
-        model.addAttribute("user",userDAO.getFromId(id));
+        model.addAttribute("user",userService.getFromId(id));
         return "show";
     }
 
-    //Обновить юзера
-    @GetMapping("/update/{id}")
-    public String ShowUpdatePage(@PathVariable("id") Long id, Model model){
-        model.addAttribute("user",userDAO.getFromId(id));
-        return "updatePage";
-    }
-
-    @PatchMapping("{/id}")
-    public String update(@ModelAttribute("user") User user,@PathVariable("id") Long id){
-        userDAO.updateUser(id,user);
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable("id") Long id){
+        userService.deleteUser(id);
         return "redirect:/";
     }
 
+    //Обновить юзера
+    @GetMapping("/up/{id}")
+    public String ShowUpdatePage(@PathVariable("id") Long id, Model model){
+        model.addAttribute("user",userService.getFromId(id));
+        return "updatePage";
+    }
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("user")User user,@PathVariable("id") Long id){
+        userService.updateUser(id,user);
+        return "redirect:/";
+    }
 }

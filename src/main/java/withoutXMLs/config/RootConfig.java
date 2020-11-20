@@ -1,7 +1,11 @@
 package withoutXMLs.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 @Configuration
 public class RootConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -25,6 +29,16 @@ public class RootConfig extends AbstractAnnotationConfigDispatcherServletInitial
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        registerHiddenFielter(servletContext);
+    }
+
+    private void registerHiddenFielter(ServletContext servletContext){
+        servletContext.addFilter("HiddenHttpMethodFilter",new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null,true,"/*");
     }
 
 }

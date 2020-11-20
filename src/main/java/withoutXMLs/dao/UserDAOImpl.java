@@ -33,27 +33,21 @@ public class UserDAOImpl implements UserDAO {
        return entityManager.createQuery("from User ").getResultList();
     }
 
-    public List<User> getFromId(Long id){
-        return entityManager.createQuery("from User where id ="+id+"").getResultList();
+    public User getFromId(Long id){
+        return entityManager.find(User.class,id);
     }
 
-    public void updateUser(Long id,User updateUser){
-       entityManager.createQuery("select * from User where id ="+id+"");
+    public void updateUser(Long id,User userUp){
+    User user =  getFromId(id);
+    user.setName(userUp.getName());
+    user.setAge(userUp.getAge());
+    user.setMail(userUp.getMail());
+    user.setId(userUp.getId());
+
     }
 
-//    @Override
-//    public void DeleteUser() {
-//
-//    }
-//
-//    @Override
-//    public void UpdateUser() {
-//
-//    }
-//
-//    @Override
-//    public String GetUserByID(Long id) {
-//        return null;
-//    }
+    public void deleteUser(Long id) {
+        entityManager.remove(getFromId(id));
+    }
 
 }
