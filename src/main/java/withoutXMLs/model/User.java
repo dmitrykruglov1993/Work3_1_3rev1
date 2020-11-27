@@ -1,9 +1,14 @@
 package withoutXMLs.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @Column(name = "id")
@@ -19,22 +24,34 @@ public class User {
     @Column(name = "age")
     private byte age;
 
-    public User(String name, String mail, byte age) {
+    @Column(name = "password")
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
+
+    public User(String name, String mail,String password, byte age) {
         this.name = name;
         this.mail = mail;
         this.age = age;
+        this.password=password;
     }
     public User(){}
 
-    public User(Long id,String name, String mail, byte age) {
-        this.id=id;
-        this.name = name;
-        this.mail = mail;
-        this.age = age;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     public void setId(Long id) {
@@ -73,6 +90,41 @@ public class User {
                 ", mail='" + mail + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 

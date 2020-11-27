@@ -1,8 +1,10 @@
 package withoutXMLs.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import withoutXMLs.dao.UserDAO;
 import withoutXMLs.dao.UserDAOImpl;
@@ -22,13 +24,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    //Добавление первой записи в БД
-    @Autowired
-    public void FirstUserInTable(){
-        userService.FirstSave();
-    }
+//    Добавление первой записи в БД
+//    @Autowired
+//    public void FirstUserInTable(){
+//        userService.AddRolesAndAdmin();
+//    }
 
-    @GetMapping("/")
+    @GetMapping("/page")
     public String ViewUserListPage(Model model){
         model.addAttribute("user",userService.getUsers());
         return "page";
@@ -39,23 +41,25 @@ public class UserController {
     public String getNewUser(@ModelAttribute("user") User user){
         return "newUser";
     }
+
     @PostMapping
     public String create(User user){
-        userService.save(user);
-        return "redirect:/";
+        userService.saveUser(user);
+        return "redirect:page";
     }
 
     //Показать юзера с id
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model){
-        model.addAttribute("user",userService.getFromId(id));
-        return "show";
+    @GetMapping("/hello")
+    public String show(User user,Model model){
+        user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("messages",user.getName());
+        return "/hello";
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);
-        return "redirect:/";
+        return "redirect:page";
     }
 
     //Обновить юзера
@@ -67,6 +71,6 @@ public class UserController {
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user")User user,@PathVariable("id") Long id){
         userService.updateUser(id,user);
-        return "redirect:/";
+        return "redirect:page";
     }
 }

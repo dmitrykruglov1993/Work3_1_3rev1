@@ -46,7 +46,7 @@ public class HibernateConfig {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect","org.hibernate.dialect.MySQL8Dialect");
         properties.setProperty("hibernate.show_sql","true");
-        properties.setProperty("hibernate.hbm2ddl.auto","create");
+        properties.setProperty("hibernate.hbm2ddl.auto","update");
         emf.setJpaProperties(properties);
         return emf;
     }
