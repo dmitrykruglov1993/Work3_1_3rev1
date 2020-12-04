@@ -1,6 +1,8 @@
 package withoutXMLs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,10 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import withoutXMLs.dao.UserDAO;
 
+import withoutXMLs.model.Role;
 import withoutXMLs.model.User;
 
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Transactional
@@ -25,11 +30,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDAO.saveUser(user);
         return true;
     }
-
-//    @Override
-//    public void AddRolesAndAdmin(){
-//        userDAO.AddRolesAndAdmin();
-//    }
+    @Override
+    public Role getRoleFromId(Long id){
+        return userDAO.getRoleFromId(id);
+    }
 
     @Override
     public List<User> getUsers() {
@@ -61,9 +65,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       return userDAO.findUserByName(name);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-
         if(userDAO.findUserByName(s) == null){
             throw new UsernameNotFoundException("User not found");
         }

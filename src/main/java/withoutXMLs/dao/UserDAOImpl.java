@@ -15,7 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Component
@@ -25,30 +27,37 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-//        User user = new User("User1","User1@mail.ru","1234",(byte)98);
-//        User user2 = new User("User2","User1@mail.ru","4321",(byte)36);
-//
-//        Role role_user = new Role(1L,"ROLE_USER");
-//        Role role_admin = new Role(2L,"ROLE_ADMIN");
-//
-//    public void AddRolesAndAdmin() {
-//        entityManager.persist(user);
-//        entityManager.persist(user2);
-//        entityManager.persist(role_user);
-//        entityManager.persist(role_admin);
-//    }
-
     public boolean saveUser(User user) {
-        entityManager.persist(user);
-        return true;
+        Set<Role> roles_USER = new HashSet<>();
+        Set<Role> roles_ADMIN = new HashSet<>();
+        roles_USER.add(getRoleFromId(1L));
+        roles_ADMIN.add(getRoleFromId(2L));
+
+        if(user.getRoleMarker().equals("ROLE_USER")){
+            user.setRole(roles_USER);
+            user.setRoleMarker("ROLE_USER");
+            entityManager.persist(user);
+            return true;
+        }else if(user.getRoleMarker().equals("ROLE_ADMIN")){
+            user.setRole(roles_ADMIN);
+            user.setRoleMarker("ROLE_ADMIN");
+            entityManager.persist(user);
+            return true;
+        }
+        return false;
     }
+
     public List<User> getUsers(){
        return entityManager.createQuery("from User ").getResultList();
     }
 
+
+
     public User getFromId(Long id){
         return entityManager.find(User.class,id);
     }
+
+    public Role getRoleFromId(Long id){return entityManager.find(Role.class,id);}
 
     public void updateUser(Long id,User userUp){
     User user =  getFromId(id);
@@ -56,7 +65,20 @@ public class UserDAOImpl implements UserDAO {
     user.setAge(userUp.getAge());
     user.setMail(userUp.getMail());
     user.setId(userUp.getId());
+    user.setPassword(userUp.getPassword());
 
+    Set<Role> roles_USER = new HashSet<>();
+    Set<Role> roles_ADMIN = new HashSet<>();
+    roles_USER.add(getRoleFromId(1L));
+    roles_ADMIN.add(getRoleFromId(2L));
+
+    if(userUp.getRoleMarker().equals("ROLE_USER")){
+        user.setRole(roles_USER);
+        user.setRoleMarker("ROLE_USER");
+    }else if(userUp.getRoleMarker().equals("ROLE_ADMIN")){
+        user.setRole(roles_ADMIN);
+        user.setRoleMarker("ROLE_ADMIN");
+    }
     }
 
     public void deleteUser(Long id) {

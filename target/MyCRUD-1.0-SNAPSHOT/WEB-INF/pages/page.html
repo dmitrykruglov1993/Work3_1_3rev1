@@ -12,12 +12,22 @@
         <th>Name</th>
         <th>LastName</th>
         <th>Age</th>
+        <th>Role</th>
     </tr>
+
     <tr th:each="us,state:${user}">
         <td th:utext="${us.id}"></td>
         <td th:utext="${us.name}"></td>
         <td th:utext="${us.mail}"></td>
         <td th:utext="${us.age}"></td>
+        <td th:each="rls,state:${us.role}" th:utext="${rls.role}"></td>
+        <td><form th:action="@{/admin/up/{id}(id=${us.getId()})}">
+            <input type="submit" value="Edit">
+        </form>
+        </td>
+        <td><form th:method="DELETE" th:action="@{/admin/{id}(id=${us.getId()})}">
+            <input type="submit" value="Delete"/>
+        </form>
     </tr>
 </table>
 </body>

@@ -15,15 +15,10 @@ public class Role implements GrantedAuthority {
     private String role;
 
     @Transient
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "role")
+    private Set<User> user;
 
     public Role() {
-    }
-
-    public Role(Long id, String role) {
-        this.id = id;
-        this.role = role;
     }
 
     public Long getId() {
@@ -43,15 +38,24 @@ public class Role implements GrantedAuthority {
     }
 
     public Set<User> getUsers() {
-        return users;
+        return user;
     }
 
     public void setUsers(Set<User> users) {
-        this.users = users;
+        this.user = user;
     }
 
     @Override
     public String getAuthority() {
         return getRole();
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", role='" + role + '\'' +
+                ", users=" + user +
+                '}';
     }
 }

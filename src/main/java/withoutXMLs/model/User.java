@@ -11,32 +11,40 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id
-    @Column(name = "id")
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "mail")
+    @Column
     private String mail;
 
-    @Column(name = "age")
+    @Column
     private byte age;
 
-    @Column(name = "password")
+    @Column
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @Transient
+    private String roleMarker;
 
-    public User(String name, String mail,String password, byte age) {
-        this.name = name;
-        this.mail = mail;
-        this.age = age;
-        this.password=password;
+    public String getRoleMarker() {
+        return roleMarker;
     }
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn (name = "role_id"))
+    private Set<Role> role;
+
     public User(){}
+
+    public void setRoleMarker(String roleMarker) {
+        this.roleMarker = roleMarker;
+    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -46,12 +54,12 @@ public class User implements UserDetails {
         return id;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Role> getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Set<Role> roles) {
+        this.role = roles;
     }
 
     public void setId(Long id) {
@@ -89,12 +97,13 @@ public class User implements UserDetails {
                 ", name='" + name + '\'' +
                 ", mail='" + mail + '\'' +
                 ", age=" + age +
+                ",role=" + role +
                 '}';
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        return getRole();
     }
 
     @Override

@@ -30,18 +30,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+//        htt.
 ////                 указываем страницу с формой логина
 //                .loginPage("/login")
 ////                указываем логику обработки при логине
-                .successHandler(loginSuccessHandler)
+             //   .successHandler(loginSuccessHandler)
 ////                 указываем action с формы логина
 //                .loginProcessingUrl("/login")
 ////                 Указываем параметры логина и пароля с формы логина
 //                .usernameParameter("j_username")
 //                .passwordParameter("j_password")
 ////                 даем доступ к форме логина всем
-                .permitAll();
+           //     .permitAll();
 //
 //        http.logout()
 //                // разрешаем делать логаут всем
@@ -53,13 +53,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                //выклчаем кроссдоменную секьюрность (на этапе обучения неважна)
 //                .and().csrf().disable();
 
-        http.csrf()
-                .disable()
+        http
                 .authorizeRequests()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/hello").hasAnyRole("USER","ADMIN")
                 .antMatchers("/login").permitAll()
-                .antMatchers("/page").access("hasAnyRole('ROLE_ADMIN')")
-                .antMatchers("/new").access("hasAnyRole('ROLE_ADMIN')")
-                .and();
+                .and().formLogin()
+                .successHandler(loginSuccessHandler);
     }
 
     @Bean
