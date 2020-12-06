@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<table border="1">
+    <tr>
+        <th>id</th>
+        <th>Name</th>
+        <th>LastName</th>
+        <th>Age</th>
+    </tr>
+    <tr th:object="${user}">
+        <td th:utext="${user.id}"></td>
+        <td th:utext="${user.name}"></td>
+        <td th:utext="${user.mail}"></td>
+        <td th:utext="${user.age}"></td>
+    </tr>
+</table>
+
+
+<!--<div>-->
+<!--        <p th:text="${messages}"></p>-->
+<!--</div>-->
+</body>
+</html>
