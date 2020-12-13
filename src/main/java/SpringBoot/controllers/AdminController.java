@@ -1,6 +1,7 @@
 package SpringBoot.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,10 @@ public class AdminController {
 
 
     @GetMapping("/page")
-    public String ViewUserListPage(Model model){
-        model.addAttribute("user",userService.getUsers());
+    public String ViewUserListPage(User user,Model model){
+        user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("userAuth",userService.getFromId(user.getId()));
+        model.addAttribute("Alluser",userService.getUsers());
         return "page";
     }
 
