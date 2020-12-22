@@ -4,6 +4,7 @@ import SpringBoot.model.Role;
 import SpringBoot.model.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
      boolean saveUser(User user);
@@ -14,4 +15,6 @@ public interface UserService {
      void updateUser(Long id,User user);
      User FindUserByName(String name);
      Role getRoleFromId(Long id);
+     Set<Role> getRoles(String[] ids);
+     List<Role> getAllRoles();
 }

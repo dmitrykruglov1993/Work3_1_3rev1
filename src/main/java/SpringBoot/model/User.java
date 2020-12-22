@@ -19,21 +19,17 @@ public class User implements UserDetails {
     private String name;
 
     @Column
-    private String mail;
-
-    @Column
-    private byte age;
-
-    @Column
     private String password;
 
-    @Transient
-    private String roleMarker;
-
-    public String getRoleMarker() {
-        return roleMarker;
-    }
-
+//    private String roleId;
+//
+//    public String getRoleId() {
+//        return roleId;
+//    }
+//
+//    public void setRoleId(String roleId) {
+//        this.roleId = roleId;
+//    }
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
@@ -41,10 +37,6 @@ public class User implements UserDetails {
     private Set<Role> role;
 
     public User(){}
-
-    public void setRoleMarker(String roleMarker) {
-        this.roleMarker = roleMarker;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -74,29 +66,11 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public byte getAge() {
-        return age;
-    }
-
-    public void setAge(byte age) {
-        this.age = age;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", mail='" + mail + '\'' +
-                ", age=" + age +
                 ",role=" + role +
                 '}';
     }

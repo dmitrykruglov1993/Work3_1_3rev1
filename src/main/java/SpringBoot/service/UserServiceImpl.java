@@ -14,6 +14,7 @@ import SpringBoot.model.User;
 
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -48,8 +49,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<Role> getAllRoles() {
+        return userDAO.readRole();
+    }
+
+    @Override
     public void deleteUser(Long id) {
     userDAO.deleteUser(id);
+    }
+    @Override
+    public Set<Role> getRoles(String[] ids) {
+        return userDAO.getRoles(ids);
     }
 
     @Override

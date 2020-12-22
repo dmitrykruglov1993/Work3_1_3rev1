@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,23 +27,8 @@ public class UserDAOImpl implements UserDAO {
     private EntityManager entityManager;
 
     public boolean saveUser(User user) {
-        Set<Role> roles_USER = new HashSet<>();
-        Set<Role> roles_ADMIN = new HashSet<>();
-        roles_USER.add(getRoleFromId(1L));
-        roles_ADMIN.add(getRoleFromId(2L));
-
-        if(user.getRoleMarker().equals("ROLE_USER")){
-            user.setRole(roles_USER);
-            user.setRoleMarker("ROLE_USER");
             entityManager.persist(user);
             return true;
-        }else if(user.getRoleMarker().equals("ROLE_ADMIN")){
-            user.setRole(roles_ADMIN);
-            user.setRoleMarker("ROLE_ADMIN");
-            entityManager.persist(user);
-            return true;
-        }
-        return false;
     }
 
     public List<User> getUsers(){
@@ -58,27 +44,18 @@ public class UserDAOImpl implements UserDAO {
     public void updateUser(Long id,User userUp){
     User user =  getFromId(id);
     user.setName(userUp.getName());
-    user.setAge(userUp.getAge());
-    user.setMail(userUp.getMail());
     user.setId(userUp.getId());
     user.setPassword(userUp.getPassword());
-
-    Set<Role> roles_USER = new HashSet<>();
-    Set<Role> roles_ADMIN = new HashSet<>();
-    roles_USER.add(getRoleFromId(1L));
-    roles_ADMIN.add(getRoleFromId(2L));
-
-    if(userUp.getRoleMarker().equals("ROLE_USER")){
-        user.setRole(roles_USER);
-        user.setRoleMarker("ROLE_USER");
-    }else if(userUp.getRoleMarker().equals("ROLE_ADMIN")){
-        user.setRole(roles_ADMIN);
-        user.setRoleMarker("ROLE_ADMIN");
-    }
     }
 
     public void deleteUser(Long id) {
         entityManager.remove(getFromId(id));
+    }
+
+    @Override
+    public List<Role> readRole() {
+        TypedQuery<Role> query= entityManager.createQuery("from Role", Role.class);
+        return query.getResultList();
     }
 
     @Override
@@ -92,6 +69,14 @@ public class UserDAOImpl implements UserDAO {
         TypedQuery<User> query = entityManager.createQuery("from User where name = :name",User.class);
         User user = query.setParameter("name",name).getSingleResult();
         return user;
+    }
+
+    @Override
+    public Set<Role> getRoles(String[] ids) {
+        TypedQuery<Role> query= entityManager.createQuery("from Role where id = :id", Role.class);
+        Set<Role> roles = new HashSet<>();
+        Arrays.stream(ids).forEach(roleId -> {query.setParameter("id", Long.parseLong(roleId)); roles.add(query.getSingleResult());});
+        return roles;
     }
 
 }

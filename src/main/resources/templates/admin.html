@@ -32,7 +32,7 @@
       <br>
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
-          <a href="/page" class="nav-link active">Admin</a>
+          <a href="/admin" class="nav-link active">Admin</a>
         </li>
         <li class="nav-item">
           <a href="/hello" class="nav-link">User</a>
@@ -62,10 +62,11 @@
                 <tr>
                   <th>ID</th>
                   <th>Username</th>
+                  <th>Password</th>
                   <th>Roles</th>
                 </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody id="usersTableBody">
                 </tbody>
               </table>
             </div>
@@ -81,13 +82,13 @@
                 <div class="row">
                   <div class="col-sm-3"></div>
                   <div class="col-sm-6">
-                    <form action="/page" id="newUserForm" autocomplete="off">
+                    <form action="/admin" id="newUserForm" autocomplete="off">
                       <div class="form-group">
                         <label class="font-weight-bold" for="newUserUsername">
                           Username
                         </label>
                         <input type="text"
-                               name="name"
+                               name="username"
                                id="newUserUsername"
                                class="form-control"
                                placeholder="Enter username"
@@ -104,6 +105,18 @@
                                placeholder="Enter password"
                                required>
                       </div>
+<!--                      <div class="form-group" id="newUserRoles">-->
+<!--                        <div class='custom-control-inline custom-control custom-switch'>-->
+<!--                          <input type="checkbox" class="custom-control-input" name="rolesString"-->
+<!--                                 id="newUserRoleADMIN" value="ADMIN">-->
+<!--                          <label for="newUserRoleADMIN"-->
+<!--                                 class="font-weight-bold custom-control-label">ADMIN</label></div>-->
+<!--                        <div class='custom-control-inline custom-control custom-switch'>-->
+<!--                          <input type="checkbox" class="custom-control-input" name="rolesString"-->
+<!--                                 id="newUserRoleUSER" value="USER">-->
+<!--                          <label for="newUserRoleUSER"-->
+<!--                                 class="font-weight-bold custom-control-label">USER</label></div>-->
+<!--                      </div>-->
                       <label class="font-weight-bold"
                              for="newUserRoles">
                         Roles
@@ -190,120 +203,6 @@
     </div>
   </div>
 </div>
-<script>
-  $(function () {
-
-    getAllUsers();
-
-    let newUserForm = $("#newUserForm");
-
-    newUserForm.submit(function (event) {
-      event.preventDefault();
-      let newUser =
-      {
-        name:($("#newUserUsername").val()),
-        password: ($("#newUserPassword").val()),
-        roleId:($("#newUserRoles").val())
-       };
-      $.ajax({
-        url: "/rest",
-        method: "POST",
-        contentType: 'application/json',
-        data:JSON.stringify(newUser),
-        success: function () {
-          $('#tbody').empty();
-          getAllUsers();
-        }
-      });
-      // $("#newUserFormResetButton").trigger("click");
-      // alert("User " + $("#newUserUsername").val() + " saved");
-    });
-
-    let editUserForm = $("#editUserForm");
-
-    editUserForm.submit(function (event) {
-      event.preventDefault();
-      let editUser = {
-        id: $("#editUserId").val(),
-        name: $("#editUserUsername").val(),
-        password: $("#editUserPassword").val(),
-        roles: $("#editUserRoles").val()
-      };
-      $.ajax({
-        url: "/rest",
-        method: "PUT",
-        contentType: 'application/json',
-        data: JSON.stringify(editUser),
-        success: function () {
-          $('#tbody').empty();
-          getAllUsers();
-        }
-      });
-      $("#editUserCloseButton").trigger("click");
-    })
-  })
-
-    function getAllUsers() {
-      $.ajax("/rest", {
-        dataType: "json",
-        success: function (data) {
-          data.forEach(function (el) {
-            addUserInTableBody(el);
-          });
-        }
-      })
-    }
-
-
-  function removeUser(id) {
-    $("tr#tr" + id).remove();
-    $.ajax({
-      url:"/rest/delete" + id,
-      method:"DELETE",
-    });
-  }
-
-  function openEditUserModal(id) {
-    $("#editUserResetButton").trigger("click");
-
-    $("#editUserModalHeader").text("Edit user " + $("#td" + id + "username").text());
-    $("#editUserId").attr("value", id);
-    $("#editUserUsername").val($("#td" + id + "username").text());
-    $("#editUserPassword").val($("#td" + id + "password").text());
-  }
-
-    function addUserInTableBody(el) {
-      let trLocal = $("<tr></tr>").clone();
-
-
-      trLocal.attr("id", "tr" + el.id);
-      getTd(el.id, "name" + el.id).appendTo(trLocal);
-      getTd(el.name, "name" + el.id).appendTo(trLocal);
-      getRole(el.role, "role" + el.id).appendTo(trLocal);
-      $("<td><div class='btn-group mr-sm-1'><button class='btn btn-primary' data-toggle='modal' data-target='#editUserModal' onclick='openEditUserModal("
-              + el.id + ")' data-userId='" + el.id + "'>Edit</button></div></td>").appendTo(trLocal);
-      $("<td><div class='btn-group'><button class='btn btn-danger' data-userId='"
-              + el.id + "' onclick='removeUser(" + el.id
-              + ")'>Delete</button></div></td>").appendTo(trLocal);
-      trLocal.appendTo($("#tbody"));
-    }
-
-    let getTd = function (val, valueOfName) {
-      let tdLocal = $("<td></td>").clone();
-      tdLocal.attr("id", valueOfName)
-      return tdLocal.text(val);
-    }
-
-    let getRole = function (el) {
-      let selectLocal = $("<tr></tr>").clone();
-      el.forEach(function (role) {
-        $("<td></td>").clone().text(role.role).appendTo(selectLocal);
-      });
-      let tdLocal = $("<td></td>").clone();
-      selectLocal.appendTo(tdLocal);
-      return tdLocal;
-    };
-
-</script>
+<script src="/static/adminPanel.js"></script>
 </body>
 </html>

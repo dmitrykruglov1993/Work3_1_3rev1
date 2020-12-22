@@ -1,12 +1,17 @@
 package SpringBoot.controllers;
 
+import SpringBoot.model.Role;
+import SpringBoot.model.User;
+import SpringBoot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import SpringBoot.model.User;
-import SpringBoot.service.UserService;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,6 +29,14 @@ public class AdminController {
     public String ViewUserListPage(User user,Model model){
         user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("userAuth",userService.getFromId(user.getId()));
+        List<Role> allRoles = userService.getAllRoles();
+        Set<Role> Role_USER=new HashSet<>();
+        Set<Role> Role_ADMIN=new HashSet<>();
+        Role_USER.add(userService.getRoleFromId(1L));
+        Role_ADMIN.add(userService.getRoleFromId(2L));
+        model.addAttribute("ROLE_USER",Role_USER);
+        model.addAttribute("ROLE_ADMIN",Role_ADMIN);
+        model.addAttribute("roles", allRoles);
         model.addAttribute("Alluser",userService.getUsers());
         return "page";
     }
@@ -59,4 +72,5 @@ public class AdminController {
         userService.updateUser(id,user);
         return "redirect:/admin/page/";
     }
+
 }
