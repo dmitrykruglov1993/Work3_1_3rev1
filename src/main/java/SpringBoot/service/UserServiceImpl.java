@@ -28,9 +28,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDAO.saveUser(user);
         return true;
     }
+
     @Override
-    public Role getRoleFromId(Long id){
-        return userDAO.getRoleFromId(id);
+    public User SetUserRole(String user){
+       return userDAO.SetUserRole(user);
     }
 
     @Override
@@ -49,22 +50,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<Role> getAllRoles() {
-        return userDAO.readRole();
-    }
-
-    @Override
     public void deleteUser(Long id) {
     userDAO.deleteUser(id);
     }
-    @Override
-    public Set<Role> getRoles(String[] ids) {
-        return userDAO.getRoles(ids);
-    }
 
     @Override
-    public void updateUser(Long id, User user) {
-    userDAO.updateUser(id,user);
+    public void updateUser(User user) {
+    userDAO.updateUser(user);
     }
 
     @Override

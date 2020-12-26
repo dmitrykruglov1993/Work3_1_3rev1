@@ -12,10 +12,8 @@ public interface UserDAO {
    User getUserByName(String login);
    User getFromId(Long id);
    void deleteUser(Long id);
-   void updateUser(Long id,User user);
+   void updateUser(User user);
    User findUserByName(String name);
-   Role getRoleFromId(Long id);
-   Set<Role> getRoles(String[] ids);
-   List<Role> readRole();
 
+   User SetUserRole(String user);
 }

@@ -21,16 +21,6 @@ public class User implements UserDetails {
     @Column
     private String password;
 
-//    private String roleId;
-//
-//    public String getRoleId() {
-//        return roleId;
-//    }
-//
-//    public void setRoleId(String roleId) {
-//        this.roleId = roleId;
-//    }
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn (name = "role_id"))

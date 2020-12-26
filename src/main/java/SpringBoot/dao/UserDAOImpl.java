@@ -1,6 +1,8 @@
 package SpringBoot.dao;
 
 
+import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.springframework.stereotype.Repository;
@@ -26,9 +28,31 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private RoleDAO roleDAO;
+
     public boolean saveUser(User user) {
-            entityManager.persist(user);
-            return true;
+        entityManager.persist(user);
+        return true;
+    }
+
+    public User SetUserRole(String user){
+
+        Gson gson = new Gson();
+        User userFromJson = gson.fromJson(user,User.class);
+
+        Set<Role> role_User = new HashSet<>();
+        role_User.add(roleDAO.getRoleFromId(1L));
+
+        Set<Role> role_Admin = new HashSet<>();
+        role_Admin.add(roleDAO.getRoleFromId(2L));
+
+        if(user.contains("ROLE_USER")){
+            userFromJson.setRole(role_User);
+        }else if(user.contains("ROLE_ADMIN")) {
+            userFromJson.setRole(role_Admin);
+        }
+        return userFromJson;
     }
 
     public List<User> getUsers(){
@@ -39,23 +63,16 @@ public class UserDAOImpl implements UserDAO {
         return entityManager.find(User.class,id);
     }
 
-    public Role getRoleFromId(Long id){return entityManager.find(Role.class,id);}
-
-    public void updateUser(Long id,User userUp){
-    User user =  getFromId(id);
-    user.setName(userUp.getName());
-    user.setId(userUp.getId());
-    user.setPassword(userUp.getPassword());
+    public void updateUser(User userUp){
+//    User user =  getFromId(userUp.getId());
+//    user.setName(userUp.getName());
+//    user.setId(userUp.getId());
+//    user.setPassword(userUp.getPassword());
+        entityManager.merge(userUp);
     }
 
     public void deleteUser(Long id) {
         entityManager.remove(getFromId(id));
-    }
-
-    @Override
-    public List<Role> readRole() {
-        TypedQuery<Role> query= entityManager.createQuery("from Role", Role.class);
-        return query.getResultList();
     }
 
     @Override
@@ -69,14 +86,6 @@ public class UserDAOImpl implements UserDAO {
         TypedQuery<User> query = entityManager.createQuery("from User where name = :name",User.class);
         User user = query.setParameter("name",name).getSingleResult();
         return user;
-    }
-
-    @Override
-    public Set<Role> getRoles(String[] ids) {
-        TypedQuery<Role> query= entityManager.createQuery("from Role where id = :id", Role.class);
-        Set<Role> roles = new HashSet<>();
-        Arrays.stream(ids).forEach(roleId -> {query.setParameter("id", Long.parseLong(roleId)); roles.add(query.getSingleResult());});
-        return roles;
     }
 
 }

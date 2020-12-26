@@ -17,6 +17,7 @@
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
   <title>Admin panel</title>
+  <script src="../static/jscode.js"></script>
 </head>
 <body style="height: 100%">
 <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -35,7 +36,7 @@
           <a href="/page" class="nav-link active">Admin</a>
         </li>
         <li class="nav-item">
-          <a href="/hello" class="nav-link">User</a>
+          <a href="/AdminHello" class="nav-link">User</a>
         </li>
       </ul>
     </div>
@@ -108,10 +109,9 @@
                              for="newUserRoles">
                         Roles
                       </label>
-                      <select class="custom-select" name="rolesId" id="newUserRoles" size="2"
-                              multiple required>
-                        <option value="1">ADMIN</option>
-                        <option value="2">USER</option>
+                      <select class="custom-select" name="roleIds" id="newUserRoles" th:size="2" multiple>
+                        <option th:value="ROLE_USER">User</option>
+                        <option th:value="ROLE_ADMIN" >Admin</option>
                       </select>
                       <div class="form-group">
                         <input type="submit" class="btn btn-success" value="Add new user">
@@ -170,8 +170,8 @@
                       </label>
                       <select class="custom-select" name="rolesId" id="editUserRoles" size="2"
                               multiple required>
-                        <option value="1">ADMIN</option>
-                        <option value="2">USER</option>
+                        <option th:value="ROLE_ADMIN">ADMIN</option>
+                        <option th:value="ROLE_USER">USER</option>
                       </select>
                     </div>
                     <input type="reset" hidden="hidden" id="editUserResetButton">
@@ -201,22 +201,21 @@
       event.preventDefault();
       let newUser =
       {
-        name:($("#newUserUsername").val()),
-        password: ($("#newUserPassword").val()),
-        roleId:($("#newUserRoles").val())
+        name:$("#newUserUsername").val(),
+        password: $("#newUserPassword").val(),
+        roleId:$("#newUserRoles").val()
        };
       $.ajax({
         url: "/rest",
         method: "POST",
         contentType: 'application/json',
-        data:JSON.stringify(newUser),
+        data: JSON.stringify(newUser),
         success: function () {
           $('#tbody').empty();
           getAllUsers();
         }
       });
-      // $("#newUserFormResetButton").trigger("click");
-      // alert("User " + $("#newUserUsername").val() + " saved");
+
     });
 
     let editUserForm = $("#editUserForm");
@@ -230,7 +229,7 @@
         roles: $("#editUserRoles").val()
       };
       $.ajax({
-        url: "/rest",
+        url: "/rest/edit",
         method: "PUT",
         contentType: 'application/json',
         data: JSON.stringify(editUser),
@@ -258,8 +257,8 @@
   function removeUser(id) {
     $("tr#tr" + id).remove();
     $.ajax({
-      url:"/rest/delete" + id,
-      method:"DELETE",
+      url: "/rest/delete/" + id,
+      method: "DELETE",
     });
   }
 
@@ -274,8 +273,6 @@
 
     function addUserInTableBody(el) {
       let trLocal = $("<tr></tr>").clone();
-
-
       trLocal.attr("id", "tr" + el.id);
       getTd(el.id, "name" + el.id).appendTo(trLocal);
       getTd(el.name, "name" + el.id).appendTo(trLocal);
@@ -303,6 +300,7 @@
       selectLocal.appendTo(tdLocal);
       return tdLocal;
     };
+
 
 </script>
 </body>

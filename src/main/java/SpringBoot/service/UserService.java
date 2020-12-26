@@ -9,12 +9,10 @@ import java.util.Set;
 public interface UserService {
      boolean saveUser(User user);
      List<User> getUsers();
-     User getUserByName(String login);
+     User FindUserByName(String name);
      User getFromId(Long id);
      void deleteUser(Long id);
-     void updateUser(Long id,User user);
-     User FindUserByName(String name);
-     Role getRoleFromId(Long id);
-     Set<Role> getRoles(String[] ids);
-     List<Role> getAllRoles();
+     void updateUser(User user);
+     User getUserByName(String login);
+     User SetUserRole(String user);
 }

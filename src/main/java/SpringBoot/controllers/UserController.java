@@ -25,5 +25,11 @@ public class UserController {
         model.addAttribute("userAuth",userService.getFromId(user.getId()));
         return "hello";
     }
+    @GetMapping("/AdminHello")
+    public String showAdmin(User user, Model model){
+        user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("userAuth",userService.getFromId(user.getId()));
+        return "hello";
+    }
 
 }
